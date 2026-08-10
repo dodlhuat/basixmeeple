@@ -1,0 +1,5 @@
+# Claude Code: local/session-specific state, not shared project config
+.claude/settings.local.json
+.claude/agent-memory/
+
+.DS_Store

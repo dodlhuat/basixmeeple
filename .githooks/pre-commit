@@ -1,0 +1,15 @@
+#!/usr/bin/env bash
+# Blocks the commit unless the backend test suite is green.
+# Extend this once the frontend has a test runner of its own.
+set -euo pipefail
+
+repo_root="$(git rev-parse --show-toplevel)"
+
+echo "pre-commit: running backend test suite..."
+if ! (cd "$repo_root/backend" && php artisan test); then
+    echo
+    echo "pre-commit: backend tests failed - commit aborted." >&2
+    exit 1
+fi
+
+echo "pre-commit: tests green, proceeding with commit."

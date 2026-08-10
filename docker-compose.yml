@@ -1,0 +1,52 @@
+services:
+  mariadb:
+    image: mariadb:11
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: basixmeeple
+      MARIADB_USER: basixmeeple
+      MARIADB_PASSWORD: secret
+      MARIADB_ROOT_PASSWORD: secret
+    ports:
+      - "3306:3306"
+    volumes:
+      - mariadb-data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  backend:
+    build:
+      context: ./backend
+      dockerfile: Dockerfile.dev
+    restart: unless-stopped
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./backend:/var/www/html
+    env_file:
+      - ./backend/.env
+    depends_on:
+      mariadb:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile.dev
+    restart: unless-stopped
+    ports:
+      - "3000:3000"
+    volumes:
+      - ./frontend:/app
+      - frontend-node-modules:/app/node_modules
+    environment:
+      NUXT_PUBLIC_API_BASE: http://localhost:8000
+    depends_on:
+      - backend
+
+volumes:
+  mariadb-data:
+  frontend-node-modules:

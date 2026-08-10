@@ -1,0 +1,517 @@
+parameters:
+	ignoreErrors:
+		-
+			message: '#^Cannot call method currentAccessToken\(\) on App\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/Auth/AuthController.php
+
+		-
+			message: '#^Cannot call method users\(\) on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/Auth/AuthController.php
+
+		-
+			message: '#^Cannot access property \$id on App\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 1
+			path: app/Http/Controllers/CollectionController.php
+
+		-
+			message: '#^Cannot call method collections\(\) on App\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Controllers/CollectionController.php
+
+		-
+			message: '#^Parameter \#1 \$user of method App\\Models\\Collection\:\:canBeEditedBy\(\) expects App\\Models\\User, App\\Models\\User\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/CollectionGameController.php
+
+		-
+			message: '#^Parameter \#1 \$user of method App\\Models\\Collection\:\:roleFor\(\) expects App\\Models\\User, App\\Models\\User\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/CollectionGameController.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Relations\\HasMany\:\:pending\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Controllers/CollectionInviteController.php
+
+		-
+			message: '#^Cannot access property \$id on App\\Models\\User\|null\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: app/Http/Controllers/CollectionMemberController.php
+
+		-
+			message: '#^Parameter \#1 \$user of method App\\Models\\Game\:\:isEditableBy\(\) expects App\\Models\\User, App\\Models\\User\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/ExpansionController.php
+
+		-
+			message: '#^Parameter \#1 \$user of method App\\Models\\Game\:\:isVisibleTo\(\) expects App\\Models\\User, App\\Models\\User\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/ExpansionController.php
+
+		-
+			message: '#^Parameter \#1 \$user of method App\\Models\\Game\:\:isEditableBy\(\) expects App\\Models\\User, App\\Models\\User\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/GameController.php
+
+		-
+			message: '#^Parameter \#1 \$user of method App\\Models\\Game\:\:isVisibleTo\(\) expects App\\Models\\User, App\\Models\\User\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/GameController.php
+
+		-
+			message: '#^Cannot access property \$collections on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
+			identifier: property.nonObject
+			count: 2
+			path: app/Http/Controllers/LoanController.php
+
+		-
+			message: '#^Parameter \#1 \$user of method App\\Models\\Collection\:\:canBeEditedBy\(\) expects App\\Models\\User, App\\Models\\User\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/LoanController.php
+
+		-
+			message: '#^Parameter \#1 \$user of method App\\Models\\Collection\:\:roleFor\(\) expects App\\Models\\User, App\\Models\\User\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/LoanController.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:players\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Controllers/PlaySessionController.php
+
+		-
+			message: '#^Parameter \#1 \$user of method App\\Models\\Collection\:\:canBeEditedBy\(\) expects App\\Models\\User, App\\Models\\User\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/PlaySessionController.php
+
+		-
+			message: '#^Parameter \#1 \$user of method App\\Models\\Collection\:\:roleFor\(\) expects App\\Models\\User, App\\Models\\User\|null given\.$#'
+			identifier: argument.type
+			count: 2
+			path: app/Http/Controllers/PlaySessionController.php
+
+		-
+			message: '#^Access to an undefined property App\\Models\\PlaySession\|Illuminate\\Database\\Eloquent\\Collection\<int, App\\Models\\PlaySession\>\:\:\$collection_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/SyncController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$base_game_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/SyncController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$collection_id\.$#'
+			identifier: property.notFound
+			count: 3
+			path: app/Http/Controllers/SyncController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$game_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/SyncController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$session_id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/SyncController.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Model\:\:\$updated_at\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Controllers/SyncController.php
+
+		-
+			message: '#^Call to an undefined method Illuminate\\Database\\Eloquent\\Model\:\:isEditableBy\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Controllers/SyncController.php
+
+		-
+			message: '#^Parameter \#1 \$user of method App\\Http\\Controllers\\SyncController\:\:applyOperation\(\) expects App\\Models\\User, App\\Models\\User\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/SyncController.php
+
+		-
+			message: '#^Parameter \#1 \$user of method App\\Http\\Controllers\\SyncController\:\:buildSnapshot\(\) expects App\\Models\\User, App\\Models\\User\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/SyncController.php
+
+		-
+			message: '#^Parameter \#2 \$op of method App\\Http\\Controllers\\SyncController\:\:applyOperation\(\) expects array\{entity\: string, entity_id\: string, operation\: string, payload\: array\<string, mixed\>\|null, queued_at\: string\}, array given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/SyncController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>base_game_id" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Http/Controllers/SyncController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>collection_id" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 3
+			path: app/Http/Controllers/SyncController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>game_id" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Http/Controllers/SyncController.php
+
+		-
+			message: '#^Using nullsafe property access "\?\-\>session_id" on left side of \?\? is unnecessary\. Use \-\> instead\.$#'
+			identifier: nullsafe.neverNull
+			count: 1
+			path: app/Http/Controllers/SyncController.php
+
+		-
+			message: '#^Parameter \#1 \$user of method App\\Models\\Collection\:\:canBeEditedBy\(\) expects App\\Models\\User, App\\Models\\User\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/WishlistItemController.php
+
+		-
+			message: '#^Parameter \#1 \$user of method App\\Models\\Collection\:\:roleFor\(\) expects App\\Models\\User, App\\Models\\User\|null given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Http/Controllers/WishlistItemController.php
+
+		-
+			message: '#^Call to an undefined method \(object\|string\|null\)\:\:canBeEditedBy\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Requests/AttachGameRequest.php
+
+		-
+			message: '#^Call to an undefined method \(object\|string\|null\)\:\:canBeEditedBy\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Requests/ImportBggGameRequest.php
+
+		-
+			message: '#^Cannot call method can\(\) on App\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Requests/InviteMemberRequest.php
+
+		-
+			message: '#^Cannot call method can\(\) on App\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Requests/StoreCollectionRequest.php
+
+		-
+			message: '#^Call to an undefined method \(object\|string\|null\)\:\:isEditableBy\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Requests/StoreExpansionRequest.php
+
+		-
+			message: '#^Call to an undefined method \(object\|string\|null\)\:\:canBeEditedBy\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Requests/StoreGameRequest.php
+
+		-
+			message: '#^Access to an undefined property \(object\|string\|null\)\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Requests/StoreLoanRequest.php
+
+		-
+			message: '#^Call to an undefined method \(object\|string\|null\)\:\:canBeEditedBy\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Requests/StoreLoanRequest.php
+
+		-
+			message: '#^Access to an undefined property \(object\|string\|null\)\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Requests/StorePlaySessionRequest.php
+
+		-
+			message: '#^Call to an undefined method \(object\|string\|null\)\:\:canBeEditedBy\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Requests/StorePlaySessionRequest.php
+
+		-
+			message: '#^Call to an undefined method \(object\|string\|null\)\:\:canBeEditedBy\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Requests/StoreWishlistItemRequest.php
+
+		-
+			message: '#^Call to an undefined method \(object\|string\|null\)\:\:isEditableBy\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Requests/SyncGameCategoriesRequest.php
+
+		-
+			message: '#^Cannot call method can\(\) on App\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Requests/UpdateCollectionRequest.php
+
+		-
+			message: '#^Call to an undefined method \(object\|string\|null\)\:\:isEditableBy\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Requests/UpdateExpansionRequest.php
+
+		-
+			message: '#^Call to an undefined method \(object\|string\|null\)\:\:isEditableBy\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Requests/UpdateGameRequest.php
+
+		-
+			message: '#^Call to an undefined method \(object\|string\|null\)\:\:canBeEditedBy\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Requests/UpdateLoanRequest.php
+
+		-
+			message: '#^Cannot call method can\(\) on App\\Models\\User\|null\.$#'
+			identifier: method.nonObject
+			count: 1
+			path: app/Http/Requests/UpdateMemberRoleRequest.php
+
+		-
+			message: '#^Access to an undefined property \(object\|string\|null\)\:\:\$id\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Http/Requests/UpdatePlaySessionRequest.php
+
+		-
+			message: '#^Call to an undefined method \(object\|string\|null\)\:\:canBeEditedBy\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Requests/UpdatePlaySessionRequest.php
+
+		-
+			message: '#^Call to an undefined method \(object\|string\|null\)\:\:canBeEditedBy\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Requests/UpdateWishlistItemRequest.php
+
+		-
+			message: '#^Cannot access property \$name on Illuminate\\Database\\Eloquent\\Model\|null\.$#'
+			identifier: property.nonObject
+			count: 3
+			path: app/Mail/CollectionInviteMail.php
+
+		-
+			message: '#^Method App\\Models\\Category\:\:games\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany does not specify its types\: TRelatedModel, TDeclaringModel, TPivotModel, TAccessor \(2\-4 required\)$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Category.php
+
+		-
+			message: '#^Access to an undefined property Illuminate\\Database\\Eloquent\\Relations\\Pivot\:\:\$role\.$#'
+			identifier: property.notFound
+			count: 1
+			path: app/Models/Collection.php
+
+		-
+			message: '#^Method App\\Models\\Collection\:\:games\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany does not specify its types\: TRelatedModel, TDeclaringModel, TPivotModel, TAccessor \(2\-4 required\)$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Collection.php
+
+		-
+			message: '#^Method App\\Models\\Collection\:\:invites\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Collection.php
+
+		-
+			message: '#^Method App\\Models\\Collection\:\:owner\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Collection.php
+
+		-
+			message: '#^Method App\\Models\\Collection\:\:playSessions\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Collection.php
+
+		-
+			message: '#^Method App\\Models\\Collection\:\:users\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany does not specify its types\: TRelatedModel, TDeclaringModel, TPivotModel, TAccessor \(2\-4 required\)$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Collection.php
+
+		-
+			message: '#^Method App\\Models\\Collection\:\:wishlistItems\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Collection.php
+
+		-
+			message: '#^Method App\\Models\\CollectionInvite\:\:collection\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/CollectionInvite.php
+
+		-
+			message: '#^Method App\\Models\\CollectionInvite\:\:invitedBy\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/CollectionInvite.php
+
+		-
+			message: '#^Method App\\Models\\CollectionInvite\:\:scopePending\(\) has parameter \$query with generic class Illuminate\\Database\\Eloquent\\Builder but does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/CollectionInvite.php
+
+		-
+			message: '#^Method App\\Models\\CollectionInvite\:\:scopePending\(\) return type with generic class Illuminate\\Database\\Eloquent\\Builder does not specify its types\: TModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/CollectionInvite.php
+
+		-
+			message: '#^Parameter \#1 \$column of method Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\:\:where\(\) expects array\<int\|model property of Illuminate\\Database\\Eloquent\\Model, mixed\>\|\(Closure\(Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\)\: Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\)\|\(Closure\(Illuminate\\Database\\Eloquent\\Builder\<Illuminate\\Database\\Eloquent\\Model\>\)\: void\)\|Illuminate\\Contracts\\Database\\Query\\Expression\|model property of Illuminate\\Database\\Eloquent\\Model, ''expires_at'' given\.$#'
+			identifier: argument.type
+			count: 1
+			path: app/Models/CollectionInvite.php
+
+		-
+			message: '#^Method App\\Models\\Expansion\:\:baseGame\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Expansion.php
+
+		-
+			message: '#^Method App\\Models\\Game\:\:categories\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany does not specify its types\: TRelatedModel, TDeclaringModel, TPivotModel, TAccessor \(2\-4 required\)$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Game.php
+
+		-
+			message: '#^Method App\\Models\\Game\:\:collections\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany does not specify its types\: TRelatedModel, TDeclaringModel, TPivotModel, TAccessor \(2\-4 required\)$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Game.php
+
+		-
+			message: '#^Method App\\Models\\Game\:\:expansions\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Game.php
+
+		-
+			message: '#^Method App\\Models\\Game\:\:loans\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Game.php
+
+		-
+			message: '#^Method App\\Models\\Game\:\:playSessions\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Game.php
+
+		-
+			message: '#^Method App\\Models\\Loan\:\:borrower\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Loan.php
+
+		-
+			message: '#^Method App\\Models\\Loan\:\:game\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/Loan.php
+
+		-
+			message: '#^Method App\\Models\\PlaySession\:\:collection\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/PlaySession.php
+
+		-
+			message: '#^Method App\\Models\\PlaySession\:\:game\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/PlaySession.php
+
+		-
+			message: '#^Method App\\Models\\PlaySession\:\:players\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/PlaySession.php
+
+		-
+			message: '#^Method App\\Models\\SessionPlayer\:\:session\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/SessionPlayer.php
+
+		-
+			message: '#^Method App\\Models\\SessionPlayer\:\:user\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/SessionPlayer.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:collections\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsToMany does not specify its types\: TRelatedModel, TDeclaringModel, TPivotModel, TAccessor \(2\-4 required\)$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:loansAsBorrower\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:ownedCollections\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Models\\User\:\:sessionAppearances\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\HasMany does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/User.php
+
+		-
+			message: '#^Method App\\Models\\WishlistItem\:\:collection\(\) return type with generic class Illuminate\\Database\\Eloquent\\Relations\\BelongsTo does not specify its types\: TRelatedModel, TDeclaringModel$#'
+			identifier: missingType.generics
+			count: 1
+			path: app/Models/WishlistItem.php
