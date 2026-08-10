@@ -1,0 +1,38 @@
+FROM php:8.5-fpm-alpine
+
+RUN apk add --no-cache \
+    libzip-dev oniguruma-dev icu-dev \
+    zip unzip curl
+
+RUN docker-php-ext-install -j$(nproc) \
+    pdo pdo_mysql mysqli zip bcmath pcntl mbstring intl
+
+COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
+
+WORKDIR /var/www/backend
+
+# Composer-Layer cachen: erst nur composer.json/lock kopieren
+COPY backend/composer.json backend/composer.lock ./
+RUN composer install --no-dev --no-scripts --no-autoloader --no-interaction
+
+# App-Code kopieren (.dockerignore schließt vendor/ und .env aus)
+COPY backend/ .
+
+# bootstrap/cache and storage/ are excluded via .dockerignore (they're build
+# artifacts, not source) — must exist *before* dump-autoload, since its
+# postAutoloadDump hook runs `artisan package:discover`, which requires
+# bootstrap/cache to already be present and writable.
+RUN mkdir -p storage/framework/views storage/framework/sessions \
+             storage/framework/cache storage/logs storage/app/public \
+             bootstrap/cache \
+ && chown -R www-data:www-data storage bootstrap/cache \
+ && chmod -R 775 storage bootstrap/cache \
+ && composer dump-autoload --optimize --no-dev
+
+COPY docker/php/php.ini            /usr/local/etc/php/conf.d/uploads.ini
+COPY docker/php/www.prod.conf      /usr/local/etc/php-fpm.d/www.conf
+COPY docker/php/entrypoint.prod.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+
+EXPOSE 9000
+ENTRYPOINT ["/entrypoint.sh"]

@@ -1,0 +1,109 @@
+services:
+
+  # ----------------------------------------------------------------
+  # MariaDB
+  # ----------------------------------------------------------------
+  mariadb:
+    image: mariadb:11
+    container_name: basixmeeple-mariadb
+    restart: unless-stopped
+    environment:
+      MARIADB_DATABASE: ${DB_DATABASE}
+      MARIADB_USER: ${DB_USERNAME}
+      MARIADB_PASSWORD: ${DB_PASSWORD}
+      MARIADB_ROOT_PASSWORD: ${DB_ROOT_PASSWORD}
+    volumes:
+      - mariadb_data:/var/lib/mysql
+    healthcheck:
+      test: ["CMD", "healthcheck.sh", "--connect", "--innodb_initialized"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+  # ----------------------------------------------------------------
+  # Laravel Backend (PHP-FPM, Code im Image gebacken)
+  # ----------------------------------------------------------------
+  backend:
+    build:
+      context: .
+      dockerfile: docker/php/Dockerfile.prod
+    container_name: basixmeeple-backend
+    restart: unless-stopped
+    environment:
+      APP_NAME:    "${APP_NAME}"
+      APP_ENV:     production
+      APP_DEBUG:   "false"
+      APP_KEY:     "${APP_KEY}"
+      APP_URL:     "https://${DOMAIN}"
+      FRONTEND_URL: "https://${DOMAIN}"
+
+      APP_LOCALE:          de
+      APP_FALLBACK_LOCALE: en
+
+      DB_CONNECTION: mysql
+      DB_HOST:       mariadb
+      DB_PORT:       3306
+      DB_DATABASE:   "${DB_DATABASE}"
+      DB_USERNAME:   "${DB_USERNAME}"
+      DB_PASSWORD:   "${DB_PASSWORD}"
+
+      SESSION_DRIVER:   database
+      QUEUE_CONNECTION: database
+      CACHE_STORE:      database
+      FILESYSTEM_DISK:  local
+
+      LOG_CHANNEL: stack
+      LOG_LEVEL:   error
+
+      MAIL_MAILER:       smtp
+      MAIL_HOST:         "${MAIL_HOST}"
+      MAIL_PORT:         "${MAIL_PORT}"
+      MAIL_USERNAME:     "${MAIL_USERNAME}"
+      MAIL_PASSWORD:     "${MAIL_PASSWORD}"
+      MAIL_ENCRYPTION:   ssl
+      MAIL_FROM_ADDRESS: "${MAIL_FROM_ADDRESS}"
+      MAIL_FROM_NAME:    "${APP_NAME}"
+
+      BGG_API_BASE_URL: https://boardgamegeek.com/xmlapi2
+    volumes:
+      - backend_storage:/var/www/backend/storage
+      - backend_cache:/var/www/backend/bootstrap/cache
+    depends_on:
+      mariadb:
+        condition: service_healthy
+
+  # ----------------------------------------------------------------
+  # Nginx (SSL-Termination + Reverse Proxy + Frontend)
+  # ----------------------------------------------------------------
+  nginx:
+    image: nginx:alpine
+    container_name: basixmeeple-nginx
+    restart: unless-stopped
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      DOMAIN: "${DOMAIN}"
+    volumes:
+      - ./docker/nginx/prod.conf.template:/etc/nginx/templates/default.conf.template:ro
+      - ./frontend-dist:/var/www/frontend:ro
+      - ./letsencrypt:/etc/letsencrypt:ro
+      - ./certbot-www:/var/www/certbot:ro
+    depends_on:
+      - backend
+
+  # ----------------------------------------------------------------
+  # Certbot (SSL-Zertifikate via Let's Encrypt)
+  # ----------------------------------------------------------------
+  certbot:
+    image: certbot/certbot:latest
+    container_name: basixmeeple-certbot
+    volumes:
+      - ./letsencrypt:/etc/letsencrypt
+      - ./certbot-www:/var/www/certbot
+    entrypoint: /bin/sh -c "trap exit TERM; while :; do certbot renew --webroot -w /var/www/certbot --quiet; sleep 12h & wait $${!}; done"
+
+volumes:
+  mariadb_data:
+  backend_storage:
+  backend_cache:

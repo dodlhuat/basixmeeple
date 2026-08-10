@@ -17,6 +17,10 @@ Backend: `http://localhost:8000` · Frontend: `http://localhost:3000`
 
 Alternativ per `Makefile` (`make help` für alle Targets, u.a. `make up`, `make backend`, `make frontend`, `make test`).
 
+## Deployment
+
+Siehe [`DEPLOYMENT.md`](DEPLOYMENT.md) für das Produktions-Setup (Docker Compose auf eigenem Hetzner-VPS, Nginx + Let's Encrypt).
+
 ## Pre-commit-Hook
 
 `.githooks/pre-commit` blockt Commits, wenn die Backend-Testsuite nicht grün ist. Git liest Hooks standardmäßig aus `.git/hooks/` (nicht versioniert), deshalb muss jeder Checkout einmalig auf das versionierte Verzeichnis umgestellt werden:
