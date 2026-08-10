@@ -22,8 +22,31 @@ export async function enqueueSyncOperation(
   })
 }
 
+const SYNCED_TABLES = [
+  db.users,
+  db.games,
+  db.expansions,
+  db.categories,
+  db.game_category,
+  db.collections,
+  db.collection_games,
+  db.collection_user,
+  db.play_sessions,
+  db.session_players,
+  db.loans,
+  db.wishlist_items,
+] as const
+
 export interface SyncRunResult {
   results: SyncOperationResult[]
+}
+
+/** Wipes every synced table plus the local sync_queue — used on logout so the next account on this device starts clean. */
+export async function clearLocalData(): Promise<void> {
+  await db.transaction('rw', [...SYNCED_TABLES, db.sync_queue], async () => {
+    for (const table of SYNCED_TABLES) await table.clear()
+    await db.sync_queue.clear()
+  })
 }
 
 /**
@@ -60,58 +83,41 @@ export async function runSync(): Promise<SyncRunResult> {
  * has since been deleted server-side.
  */
 async function applySnapshot(snapshot: SyncSnapshot): Promise<void> {
-  await db.transaction(
-    'rw',
-    [
-      db.users,
-      db.games,
-      db.expansions,
-      db.categories,
-      db.game_category,
-      db.collections,
-      db.collection_games,
-      db.collection_user,
-      db.play_sessions,
-      db.session_players,
-      db.loans,
-      db.wishlist_items,
-    ],
-    async () => {
-      await db.users.clear()
-      await db.users.bulkPut(snapshot.users)
+  await db.transaction('rw', SYNCED_TABLES, async () => {
+    await db.users.clear()
+    await db.users.bulkPut(snapshot.users)
 
-      await db.games.clear()
-      await db.games.bulkPut(snapshot.games)
+    await db.games.clear()
+    await db.games.bulkPut(snapshot.games)
 
-      await db.expansions.clear()
-      await db.expansions.bulkPut(snapshot.expansions)
+    await db.expansions.clear()
+    await db.expansions.bulkPut(snapshot.expansions)
 
-      await db.categories.clear()
-      await db.categories.bulkPut(snapshot.categories)
+    await db.categories.clear()
+    await db.categories.bulkPut(snapshot.categories)
 
-      await db.game_category.clear()
-      await db.game_category.bulkPut(snapshot.game_category)
+    await db.game_category.clear()
+    await db.game_category.bulkPut(snapshot.game_category)
 
-      await db.collections.clear()
-      await db.collections.bulkPut(snapshot.collections)
+    await db.collections.clear()
+    await db.collections.bulkPut(snapshot.collections)
 
-      await db.collection_games.clear()
-      await db.collection_games.bulkPut(snapshot.collection_games)
+    await db.collection_games.clear()
+    await db.collection_games.bulkPut(snapshot.collection_games)
 
-      await db.collection_user.clear()
-      await db.collection_user.bulkPut(snapshot.collection_user)
+    await db.collection_user.clear()
+    await db.collection_user.bulkPut(snapshot.collection_user)
 
-      await db.play_sessions.clear()
-      await db.play_sessions.bulkPut(snapshot.play_sessions)
+    await db.play_sessions.clear()
+    await db.play_sessions.bulkPut(snapshot.play_sessions)
 
-      await db.session_players.clear()
-      await db.session_players.bulkPut(snapshot.session_players)
+    await db.session_players.clear()
+    await db.session_players.bulkPut(snapshot.session_players)
 
-      await db.loans.clear()
-      await db.loans.bulkPut(snapshot.loans)
+    await db.loans.clear()
+    await db.loans.bulkPut(snapshot.loans)
 
-      await db.wishlist_items.clear()
-      await db.wishlist_items.bulkPut(snapshot.wishlist_items)
-    },
-  )
+    await db.wishlist_items.clear()
+    await db.wishlist_items.bulkPut(snapshot.wishlist_items)
+  })
 }

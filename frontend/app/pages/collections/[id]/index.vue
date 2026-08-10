@@ -102,10 +102,16 @@ function resetAddForm(): void {
   <section>
     <div class="page-header">
       <h1>{{ collection?.name ?? 'Sammlung' }}</h1>
-      <button v-if="canEdit" type="button" class="button button-primary" @click="showAddModal = true">
-        <svg class="icon-svg"><use :href="iconHref('add')" /></svg>
-        Spiel hinzufügen
-      </button>
+      <div class="buttons">
+        <NuxtLink :to="`/collections/${collectionId}/stats`" class="button button-outline">
+          <svg class="icon-svg"><use :href="iconHref('dashboard')" /></svg>
+          Statistik
+        </NuxtLink>
+        <button v-if="canEdit" type="button" class="button button-primary" @click="showAddModal = true">
+          <svg class="icon-svg"><use :href="iconHref('add')" /></svg>
+          Spiel hinzufügen
+        </button>
+      </div>
     </div>
 
     <p v-if="games.length === 0" class="secondary-text">Noch keine Spiele in dieser Sammlung.</p>

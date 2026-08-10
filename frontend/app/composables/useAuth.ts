@@ -1,5 +1,6 @@
 import { apiFetch } from '~/utils/apiClient'
 import { clearAuthToken, getAuthToken, setAuthToken } from '~/utils/authToken'
+import { clearLocalData } from '~/utils/sync'
 import type { User } from '~/types/models'
 
 interface AuthResponse {
@@ -28,6 +29,10 @@ export function useAuth() {
 
     setAuthToken(response.token)
     user.value = response.user
+    // The sync.client.ts plugin's boot-time sync already missed this login
+    // (it only fires if a token exists when the app first loads) — without
+    // this, the app would stay empty until the next periodic/manual sync.
+    await useSyncStatus().syncNow()
   }
 
   async function register(payload: {
@@ -43,6 +48,7 @@ export function useAuth() {
 
     setAuthToken(response.token)
     user.value = response.user
+    await useSyncStatus().syncNow()
   }
 
   async function logout(): Promise<void> {
@@ -51,6 +57,9 @@ export function useAuth() {
     } finally {
       clearAuthToken()
       user.value = null
+      // Avoid leaking the previous account's offline mirror to whoever logs
+      // in next on this device/browser.
+      await clearLocalData()
     }
   }
 
