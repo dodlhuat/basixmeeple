@@ -103,10 +103,7 @@ function resetAddForm(): void {
     <div class="page-header">
       <h1>{{ collection?.name ?? 'Sammlung' }}</h1>
       <div class="buttons">
-        <NuxtLink :to="`/collections/${collectionId}/stats`" class="button button-outline">
-          <svg class="icon-svg"><use :href="iconHref('dashboard')" /></svg>
-          Statistik
-        </NuxtLink>
+        <CollectionSubnav :collection-id="collectionId" />
         <button v-if="canEdit" type="button" class="button button-primary" @click="showAddModal = true">
           <svg class="icon-svg"><use :href="iconHref('add')" /></svg>
           Spiel hinzufügen

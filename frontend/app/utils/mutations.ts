@@ -1,7 +1,17 @@
 import { db } from './db'
 import { enqueueSyncOperation } from './sync'
 import { apiFetch } from './apiClient'
-import type { Collection, CollectionGame, Game, PlaySession, PlaySessionOutcome, SessionPlayer, Uuid } from '~/types/models'
+import type {
+  Collection,
+  CollectionGame,
+  Game,
+  Loan,
+  PlaySession,
+  PlaySessionOutcome,
+  SessionPlayer,
+  Uuid,
+  WishlistItem,
+} from '~/types/models'
 
 function nowIso(): string {
   return new Date().toISOString()
@@ -236,6 +246,122 @@ export async function deletePlaySession(sessionId: Uuid): Promise<void> {
   })
 
   await enqueueSyncOperation('play_sessions', sessionId, 'delete', null)
+
+  afterMutation()
+}
+
+export interface LoanInput {
+  game_id: Uuid
+  borrower_name: string
+  loaned_at: string
+  due_date?: string | null
+}
+
+/**
+ * `loans` is sync-queueable (unlike `collections`) — authorized server-side
+ * via "editor of any collection containing the game" since Loan has no
+ * collection_id of its own (see [[basixmeeple-project]] memory, Schritt 7).
+ */
+export async function createLoan(input: LoanInput): Promise<Uuid> {
+  const loanId = crypto.randomUUID()
+  const timestamp = nowIso()
+
+  const loan: Loan = {
+    id: loanId,
+    game_id: input.game_id,
+    borrower_name: input.borrower_name,
+    borrower_user_id: null,
+    loaned_at: input.loaned_at,
+    due_date: input.due_date ?? null,
+    returned_at: null,
+    created_at: timestamp,
+    updated_at: timestamp,
+  }
+
+  await db.loans.put(loan)
+  await enqueueSyncOperation('loans', loanId, 'create', {
+    game_id: loan.game_id,
+    borrower_name: loan.borrower_name,
+    borrower_user_id: loan.borrower_user_id,
+    loaned_at: loan.loaned_at,
+    due_date: loan.due_date,
+    returned_at: loan.returned_at,
+    updated_at: timestamp,
+  })
+
+  afterMutation()
+
+  return loanId
+}
+
+export async function markLoanReturned(loanId: Uuid): Promise<void> {
+  const timestamp = nowIso()
+
+  await db.loans.update(loanId, { returned_at: timestamp, updated_at: timestamp })
+  await enqueueSyncOperation('loans', loanId, 'update', { returned_at: timestamp, updated_at: timestamp })
+
+  afterMutation()
+}
+
+export async function deleteLoan(loanId: Uuid): Promise<void> {
+  await db.loans.delete(loanId)
+  await enqueueSyncOperation('loans', loanId, 'delete', null)
+
+  afterMutation()
+}
+
+export interface WishlistItemInput {
+  title: string
+  bgg_id?: number | null
+  priority?: number
+  price_estimate?: string | null
+}
+
+export async function createWishlistItem(collectionId: Uuid, input: WishlistItemInput): Promise<Uuid> {
+  const itemId = crypto.randomUUID()
+  const timestamp = nowIso()
+
+  const item: WishlistItem = {
+    id: itemId,
+    collection_id: collectionId,
+    title: input.title,
+    bgg_id: input.bgg_id ?? null,
+    priority: input.priority ?? 3,
+    price_estimate: input.price_estimate ?? null,
+    created_at: timestamp,
+    updated_at: timestamp,
+  }
+
+  await db.wishlist_items.put(item)
+  await enqueueSyncOperation('wishlist_items', itemId, 'create', {
+    collection_id: item.collection_id,
+    title: item.title,
+    bgg_id: item.bgg_id,
+    priority: item.priority,
+    price_estimate: item.price_estimate,
+    updated_at: timestamp,
+  })
+
+  afterMutation()
+
+  return itemId
+}
+
+export async function updateWishlistItem(
+  itemId: Uuid,
+  changes: Partial<Omit<WishlistItem, 'id' | 'collection_id' | 'created_at' | 'updated_at'>>,
+): Promise<void> {
+  const timestamp = nowIso()
+
+  await db.wishlist_items.update(itemId, { ...changes, updated_at: timestamp })
+  await enqueueSyncOperation('wishlist_items', itemId, 'update', { ...changes, updated_at: timestamp })
+
+  afterMutation()
+}
+
+export async function deleteWishlistItem(itemId: Uuid): Promise<void> {
+  await db.wishlist_items.delete(itemId)
+  await enqueueSyncOperation('wishlist_items', itemId, 'delete', null)
 
   afterMutation()
 }

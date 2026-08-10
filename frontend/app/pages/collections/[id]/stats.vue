@@ -44,7 +44,10 @@ const monthlyActivitySeries = computed<ChartSeries[]>(() => [
       Zurück zur Sammlung
     </NuxtLink>
 
-    <h1>Statistik – {{ collection?.name }}</h1>
+    <div class="page-header">
+      <h1>Statistik – {{ collection?.name }}</h1>
+      <CollectionSubnav :collection-id="collectionId" />
+    </div>
 
     <p v-if="stats.totalSessions === 0" class="secondary-text">
       Noch keine Sitzungen protokolliert — sobald ihr Spiele festhaltet, erscheinen hier Auswertungen.
@@ -112,6 +115,14 @@ const monthlyActivitySeries = computed<ChartSeries[]>(() => [
   gap: 0.25rem;
   margin-bottom: 1rem;
   color: var(--secondary-text);
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+  gap: 1rem;
 }
 
 .kpi-row {
