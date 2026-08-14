@@ -62,6 +62,78 @@ async function onDelete(): Promise<void> {
   navigateTo(`/collections/${collectionId.value}`)
 }
 
+// --- Cover upload (REST-only, see mutations.ts note on uploadGameCover/deleteGameCover) ---
+const ACCEPTED_COVER_TYPES = ['image/jpeg', 'image/png', 'image/webp']
+const MAX_COVER_BYTES = 5 * 1024 * 1024
+
+const coverInput = ref<HTMLInputElement | null>(null)
+const uploadingCover = ref(false)
+const removingCover = ref(false)
+const isCoverDragOver = ref(false)
+
+function triggerCoverSelect(): void {
+  coverInput.value?.click()
+}
+
+async function handleCoverFile(file: File): Promise<void> {
+  if (!ACCEPTED_COVER_TYPES.includes(file.type)) {
+    toast.error('Bitte ein JPEG-, PNG- oder WebP-Bild wählen.')
+    return
+  }
+  if (file.size > MAX_COVER_BYTES) {
+    toast.error('Die Datei ist zu groß (max. 5 MB).')
+    return
+  }
+
+  uploadingCover.value = true
+  try {
+    await uploadGameCover(gameId.value, file)
+    toast.success('Cover aktualisiert.')
+  } catch (e) {
+    toast.error(e instanceof ApiError ? e.message : 'Cover-Upload fehlgeschlagen.')
+  } finally {
+    uploadingCover.value = false
+  }
+}
+
+function onCoverFileChange(event: Event): void {
+  const input = event.target as HTMLInputElement
+  const file = input.files?.[0]
+  input.value = ''
+  if (file) void handleCoverFile(file)
+}
+
+function onCoverDragOver(event: DragEvent): void {
+  if (!canEdit.value) return
+  event.preventDefault()
+  isCoverDragOver.value = true
+}
+
+function onCoverDragLeave(): void {
+  isCoverDragOver.value = false
+}
+
+function onCoverDrop(event: DragEvent): void {
+  event.preventDefault()
+  isCoverDragOver.value = false
+  if (!canEdit.value) return
+  const file = event.dataTransfer?.files?.[0]
+  if (file) void handleCoverFile(file)
+}
+
+async function onRemoveCover(): Promise<void> {
+  if (!confirm('Cover wirklich entfernen?')) return
+  removingCover.value = true
+  try {
+    await deleteGameCover(gameId.value)
+    toast.success('Cover entfernt.')
+  } catch (e) {
+    toast.error(e instanceof ApiError ? e.message : 'Cover konnte nicht entfernt werden.')
+  } finally {
+    removingCover.value = false
+  }
+}
+
 // --- Categories (REST-only, see mutations.ts note on game_category being pull-only in sync) ---
 const allCategories = ref<Category[]>([])
 const selectedCategoryIds = ref<Set<string>>(new Set())
@@ -174,9 +246,58 @@ const outcomeLabels: Record<PlaySessionOutcome, string> = { win: 'Sieg', loss: '
       Zurück zur Sammlung
     </NuxtLink>
 
-    <div class="row game-detail-header">
-      <img v-if="detail.game.cover_url" :src="detail.game.cover_url" :alt="detail.game.title" class="cover" />
-      <h1>{{ detail.game.title }}</h1>
+    <div class="game-detail-header">
+      <div
+        class="cover-tile"
+        :class="{ 'is-drag-over': isCoverDragOver, 'is-editable': canEdit }"
+        @dragover="onCoverDragOver"
+        @dragleave="onCoverDragLeave"
+        @drop="onCoverDrop"
+      >
+        <img v-if="detail.game.cover_url" :src="detail.game.cover_url" :alt="detail.game.title" class="cover-img" />
+        <div v-else class="cover-img cover-placeholder">
+          <svg class="icon-svg"><use :href="iconHref('casino')" /></svg>
+        </div>
+
+        <div v-if="uploadingCover || removingCover" class="cover-busy">
+          <span class="spinner small" />
+        </div>
+
+        <template v-else-if="canEdit">
+          <button
+            type="button"
+            class="button button-icon button-primary cover-action cover-action-upload"
+            :title="detail.game.cover_url ? 'Cover ersetzen' : 'Cover hochladen'"
+            @click="triggerCoverSelect"
+          >
+            <svg class="icon-svg"><use :href="iconHref('add_a_photo')" /></svg>
+          </button>
+          <button
+            v-if="detail.game.cover_url"
+            type="button"
+            class="button button-icon button-outline cover-action cover-action-remove"
+            title="Cover entfernen"
+            @click="onRemoveCover"
+          >
+            <svg class="icon-svg"><use :href="iconHref('delete')" /></svg>
+          </button>
+        </template>
+
+        <input
+          ref="coverInput"
+          type="file"
+          accept="image/jpeg,image/png,image/webp"
+          class="visually-hidden"
+          @change="onCoverFileChange"
+        />
+      </div>
+
+      <div class="header-meta">
+        <h1>{{ detail.game.title }}</h1>
+        <p v-if="canEdit" class="text-secondary cover-hint">
+          {{ detail.game.cover_url ? 'Neues Bild hochladen oder hierher ziehen' : 'Cover hochladen oder hierher ziehen' }}
+        </p>
+      </div>
     </div>
 
     <div class="card">
@@ -254,14 +375,14 @@ const outcomeLabels: Record<PlaySessionOutcome, string> = { win: 'Sieg', loss: '
         </button>
       </div>
 
-      <p v-if="sessions.length === 0" class="secondary-text">Noch keine Sitzungen protokolliert.</p>
+      <p v-if="sessions.length === 0" class="text-secondary">Noch keine Sitzungen protokolliert.</p>
 
       <ul class="session-list">
         <li v-for="row in sessions" :key="row.session.id" class="session-item">
           <div>
             <strong>{{ new Date(row.session.played_at).toLocaleString('de-AT') }}</strong>
             <span v-if="row.session.outcome" class="badge">{{ outcomeLabels[row.session.outcome] }}</span>
-            <p class="secondary-text">
+            <p class="text-secondary">
               {{ row.players.map((p) => `${p.player_name}${p.is_winner ? ' 🏆' : ''}`).join(', ') }}
             </p>
           </div>
@@ -340,15 +461,152 @@ const outcomeLabels: Record<PlaySessionOutcome, string> = { win: 'Sieg', loss: '
 }
 
 .game-detail-header {
-  align-items: center;
-  gap: 1rem;
-  margin-bottom: 1rem;
+  display: flex;
+  align-items: flex-end;
+  gap: 1.25rem;
+  margin-bottom: 1.5rem;
+  animation: cover-header-rise-in 0.5s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
 
-  .cover {
-    width: 80px;
-    height: 80px;
-    object-fit: cover;
-    border-radius: var(--radius-md, 8px);
+// The cover sits slightly proud of the baseline the meta text sits on —
+// a small deliberate asymmetry instead of a dead-center vertical align.
+.cover-tile {
+  position: relative;
+  flex-shrink: 0;
+  width: clamp(6.5rem, 22vw, 9rem);
+  aspect-ratio: 4 / 3;
+  border-radius: var(--radius-md, 8px);
+  overflow: visible;
+  box-shadow: 0 10px 24px -12px rgba(0, 0, 0, 0.35), 0 1px 2px rgba(0, 0, 0, 0.08);
+
+  &.is-editable {
+    // Rounded clip target for the drag-over affordance, applied to a
+    // pseudo layer so the overlapping action buttons stay un-clipped.
+    &::before {
+      content: '';
+      position: absolute;
+      inset: -6px;
+      border-radius: calc(var(--radius-md, 8px) + 6px);
+      border: 2px dashed transparent;
+      transition: border-color 0.2s ease, background-color 0.2s ease;
+      pointer-events: none;
+    }
+  }
+
+  &.is-drag-over::before {
+    border-color: var(--accent-color);
+    background-color: color-mix(in srgb, var(--accent-color) 8%, transparent);
+  }
+}
+
+.cover-img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: var(--radius-md, 8px);
+}
+
+.cover-placeholder {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: var(--secondary-background);
+  color: var(--secondary-text);
+
+  .icon-svg {
+    width: 2.25rem;
+    height: 2.25rem;
+    opacity: 0.6;
+  }
+}
+
+.cover-busy {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: var(--radius-md, 8px);
+  background: color-mix(in srgb, var(--background) 55%, transparent);
+  backdrop-filter: blur(2px);
+}
+
+.cover-action {
+  position: absolute;
+  width: 2.75rem;
+  height: 2.75rem;
+  padding: 0;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  transition: transform 0.15s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.15s ease;
+
+  &:hover:not(:disabled) {
+    transform: scale(1.08);
+  }
+
+  &:active:not(:disabled) {
+    transform: scale(0.95);
+  }
+
+  .icon-svg {
+    width: 1.15rem;
+    height: 1.15rem;
+  }
+}
+
+.cover-action-upload {
+  right: -0.6rem;
+  bottom: -0.6rem;
+}
+
+.cover-action-remove {
+  right: -0.6rem;
+  top: -0.6rem;
+  background: var(--background);
+}
+
+.header-meta {
+  display: flex;
+  flex-direction: column;
+  gap: 0.2rem;
+  padding-bottom: 0.15rem;
+
+  h1 {
+    margin: 0;
+  }
+}
+
+.cover-hint {
+  font-size: 0.8125rem;
+  margin: 0;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
+@keyframes cover-header-rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .game-detail-header {
+    animation: none;
   }
 }
 
@@ -395,6 +653,10 @@ const outcomeLabels: Record<PlaySessionOutcome, string> = { win: 'Sieg', loss: '
 }
 
 .session-item {
+  // basix's `ul li { list-style-type: disc }` (typography.scss:150) targets
+  // the <li> directly, overriding the parent <ul>'s inherited `list-style:
+  // none` — the override has to live here, not just on `.session-list`.
+  list-style-type: none;
   display: flex;
   align-items: flex-start;
   justify-content: space-between;

@@ -1,4 +1,4 @@
-.PHONY: help install up down logs migrate backend frontend test typecheck larastan \
+.PHONY: help install up down logs migrate seed backend frontend test typecheck larastan \
         prod-up prod-down prod-logs prod-deploy prod-shell prod-artisan prod-ssl
 
 help:
@@ -8,6 +8,7 @@ help:
 	@echo "  make down       - Docker-Compose-Stack stoppen"
 	@echo "  make logs       - Docker-Compose-Logs verfolgen"
 	@echo "  make migrate    - Datenbankmigrationen im Backend-Container ausfuehren"
+	@echo "  make seed       - DB zuruecksetzen + Testdaten seeden (test@example.com / password)"
 	@echo "  make backend    - Backend nativ starten (php artisan serve)"
 	@echo "  make frontend   - Frontend nativ starten (npm run dev)"
 	@echo "  make test       - Backend-Testsuite ausfuehren (SQLite, kein Docker noetig)"
@@ -38,6 +39,9 @@ logs:
 
 migrate:
 	docker compose exec backend php artisan migrate
+
+seed:
+	docker compose exec backend php artisan migrate:fresh --seed
 
 backend:
 	cd backend && php artisan serve

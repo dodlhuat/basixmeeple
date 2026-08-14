@@ -8,6 +8,11 @@ RUN apk add --no-cache \
     && docker-php-ext-install pdo_mysql intl zip bcmath \
     && apk del $PHPIZE_DEPS
 
+# php-cli's built-in server ships with no php.ini at all (2M/8M compiled-in
+# defaults) unless one is provided — bump upload limits to match prod's
+# docker/php/php.ini so cover uploads aren't silently rejected in dev.
+RUN printf 'upload_max_filesize = 10M\npost_max_size = 10M\n' > /usr/local/etc/php/conf.d/uploads.ini
+
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
 
 WORKDIR /var/www/html

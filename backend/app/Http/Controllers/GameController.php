@@ -4,12 +4,16 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\SyncGameCategoriesRequest;
 use App\Http\Requests\UpdateGameRequest;
+use App\Http\Requests\UploadGameCoverRequest;
 use App\Models\Game;
+use App\Services\CoverStorageService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 
 class GameController extends Controller
 {
+    public function __construct(private readonly CoverStorageService $coverStorage) {}
+
     public function show(Request $request, Game $game): JsonResponse
     {
         abort_unless($game->isVisibleTo($request->user()), 403);
@@ -38,5 +42,24 @@ class GameController extends Controller
         $game->categories()->sync($request->validated('category_ids'));
 
         return response()->json($game->load('categories'));
+    }
+
+    public function uploadCover(UploadGameCoverRequest $request, Game $game): JsonResponse
+    {
+        $this->coverStorage->delete($game->cover_url);
+
+        $game->update(['cover_url' => $this->coverStorage->store($request->file('cover'))]);
+
+        return response()->json($game);
+    }
+
+    public function deleteCover(Request $request, Game $game): JsonResponse
+    {
+        abort_unless($game->isEditableBy($request->user()), 403);
+
+        $this->coverStorage->delete($game->cover_url);
+        $game->update(['cover_url' => null]);
+
+        return response()->json($game);
     }
 }

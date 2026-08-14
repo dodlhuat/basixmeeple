@@ -63,7 +63,7 @@ parameters:
 		-
 			message: '#^Parameter \#1 \$user of method App\\Models\\Game\:\:isEditableBy\(\) expects App\\Models\\User, App\\Models\\User\|null given\.$#'
 			identifier: argument.type
-			count: 1
+			count: 2
 			path: app/Http/Controllers/GameController.php
 
 		-
@@ -323,6 +323,12 @@ parameters:
 			identifier: method.notFound
 			count: 1
 			path: app/Http/Requests/UpdateWishlistItemRequest.php
+
+		-
+			message: '#^Call to an undefined method \(object\|string\|null\)\:\:isEditableBy\(\)\.$#'
+			identifier: method.notFound
+			count: 1
+			path: app/Http/Requests/UploadGameCoverRequest.php
 
 		-
 			message: '#^Cannot access property \$name on Illuminate\\Database\\Eloquent\\Model\|null\.$#'

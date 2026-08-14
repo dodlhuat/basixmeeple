@@ -11,12 +11,16 @@ use App\Http\Controllers\ExpansionController;
 use App\Http\Controllers\GameController;
 use App\Http\Controllers\LoanController;
 use App\Http\Controllers\PlaySessionController;
+use App\Http\Controllers\PublicStorageController;
 use App\Http\Controllers\SyncController;
 use App\Http\Controllers\WishlistItemController;
 use Illuminate\Support\Facades\Route;
 
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
+
+// Publicly readable, uploaded cover images — no auth, same as an external BGG image URL.
+Route::get('/storage/{path}', [PublicStorageController::class, 'show'])->where('path', '[A-Za-z0-9\-_\/\.]+');
 
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/logout', [AuthController::class, 'logout']);
@@ -44,6 +48,8 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::patch('/games/{game}', [GameController::class, 'update']);
     Route::delete('/games/{game}', [GameController::class, 'destroy']);
     Route::put('/games/{game}/categories', [GameController::class, 'syncCategories']);
+    Route::post('/games/{game}/cover', [GameController::class, 'uploadCover']);
+    Route::delete('/games/{game}/cover', [GameController::class, 'deleteCover']);
 
     Route::get('/games/{game}/expansions', [ExpansionController::class, 'index']);
     Route::post('/games/{game}/expansions', [ExpansionController::class, 'store']);

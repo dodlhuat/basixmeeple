@@ -1,6 +1,6 @@
 import { db } from './db'
 import { enqueueSyncOperation } from './sync'
-import { apiFetch } from './apiClient'
+import { apiFetch, apiFetchMultipart } from './apiClient'
 import type {
   Collection,
   CollectionGame,
@@ -404,4 +404,25 @@ export async function bggImportGame(collectionId: Uuid, bggId: number, pivot: Pi
   })
 
   await useSyncStatus().syncNow()
+}
+
+/**
+ * Uploading a cover image inherently requires connectivity (it can't travel
+ * through the JSON sync queue), same REST-only exception as `bggImportGame`.
+ * Applies the server's response directly to the local Dexie row rather than
+ * awaiting a full `syncNow()`, since a single-field patch doesn't need one.
+ */
+export async function uploadGameCover(gameId: Uuid, file: File): Promise<Game> {
+  const formData = new FormData()
+  formData.append('cover', file)
+
+  const game = await apiFetchMultipart<Game>(`/api/games/${gameId}/cover`, formData)
+  await db.games.update(gameId, { cover_url: game.cover_url, updated_at: game.updated_at })
+
+  return game
+}
+
+export async function deleteGameCover(gameId: Uuid): Promise<void> {
+  const game = await apiFetch<Game>(`/api/games/${gameId}/cover`, { method: 'DELETE' })
+  await db.games.update(gameId, { cover_url: game.cover_url, updated_at: game.updated_at })
 }
